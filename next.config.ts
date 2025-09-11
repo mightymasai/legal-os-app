@@ -1,7 +1,11 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig NextConfig = {
+  experimental {
+     This flag disables the use of lightningcss for CSS processing.
+    lightningCss false,
+  },
 };
 
 export default nextConfig;
+
