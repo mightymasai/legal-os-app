@@ -12,7 +12,17 @@
     "@supabase/supabase-js": "^2.50.3",
     "next": "15.3.4",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0,
+    "@tiptap/react": "^2.1.0",
+    "@@tiptap/starter-kit": "^2.1.0",
+    "@@tiptap/extension-collaboration": "^2.1.0",
+    "@@tiptap/extension-collaboration-cursor": "^2.1.0",
+    "@@tiptap/extension-placeholder": "^2.1.0",
+
+"yjs": "^13.6.0",
+    "y-websocket": "^1.5.10",
+    "y-indexeddb": "^1.0.10",
+    "uuid": "^9.0.0".0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
