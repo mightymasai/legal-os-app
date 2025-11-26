@@ -136,13 +136,6 @@ export default function DocumentEditorClient({ document }: DocumentEditorClientP
   }
 
   const handleVersionRestore = async (version: any) => {
-    if (confirm(`Are you sure you want to restore to version ${version.version_number}? This will create a new version.`)) {
-      setContent(version.content)
-      await handleSave(`Restored from version ${version.version_number}`)
-    }
-  }
-
-  const handleVersionRestore = async (version: any) => {
     try {
       setContent(version.content)
       // Save the restored version
