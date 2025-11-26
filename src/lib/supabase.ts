@@ -51,3 +51,50 @@ export type Client = {
   address?: string
   created_at: string
 }
+
+export type Matter = {
+  id: string
+  user_id: string
+  client_id?: string
+  title: string
+  description?: string
+  status: 'active' | 'closed' | 'pending' | 'settled'
+  case_number?: string
+  court?: string
+  opposing_party?: string
+  deadline?: string
+  created_at: string
+  updated_at: string
+}
+
+export type DocumentVersion = {
+  id: string
+  document_id: string
+  version_number: number
+  content: string
+  created_by: string
+  created_at: string
+  change_summary?: string
+  file_size?: number
+}
+
+export type DocumentShare = {
+  id: string
+  document_id: string
+  shared_with_user_id: string
+  shared_by_user_id: string
+  permissions: 'view' | 'edit' | 'admin'
+  expires_at?: string
+  created_at: string
+}
+
+export type AuditLog = {
+  id: string
+  user_id: string
+  action: string
+  resource_type: string
+  resource_id: string
+  details?: Record<string, any>
+  ip_address?: string
+  created_at: string
+}

@@ -144,7 +144,7 @@ export default function Clients() {
         {/* List of existing clients */}
         <div className="space-y-4">
           {clients.length === 0 ? (
-            <p>You haven't added any clients yet.</p>
+            <p>You haven&apos;t added any clients yet.</p>
           ) : (
             clients.map((client) => (
               <div key={client.id} className="bg-white p-4 rounded-lg shadow-md">

@@ -22,13 +22,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     const { data: { subscription } } = AuthService.onAuthStateChange((_event, session) => {
-      setUser(session?.user || null)
+      setUser(session?.user as User || null)
       setLoading(false)
     })
 
     // Initial check
     AuthService.getSession().then(({ data: { session } }) => {
-      setUser(session?.user || null)
+      setUser(session?.user as User || null)
       setLoading(false)
     })
 

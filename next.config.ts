@@ -1,10 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  experimental: {
-    // This flag disables the use of lightningcss for CSS processing.
-    lightningCss: false,
-  },
+  // Configuration options here
 };
 
 export default nextConfig;
