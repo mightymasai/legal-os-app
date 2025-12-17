@@ -93,19 +93,49 @@ export default function DocumentEditorClient({ document }: DocumentEditorClientP
         throw new Error('Failed to generate PDF')
       }
 
-      // Create a blob from the response
-      const blob = await response.blob()
-      const url = window.URL.createObjectURL(blob)
-      const linkElement = globalThis.document.createElement('a')
-      linkElement.href = url
-      linkElement.download = `${document.title}.pdf`
-      globalThis.document.body.appendChild(linkElement)
-      linkElement.click()
-      window.URL.revokeObjectURL(url)
-      globalThis.document.body.removeChild(linkElement)
+      const contentType = response.headers.get('content-type')
+      
+      // Check if response is PDF blob
+      if (contentType === 'application/pdf') {
+        const blob = await response.blob()
+        const url = window.URL.createObjectURL(blob)
+        const linkElement = globalThis.document.createElement('a')
+        linkElement.href = url
+        linkElement.download = `${document.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`
+        globalThis.document.body.appendChild(linkElement)
+        linkElement.click()
+        window.URL.revokeObjectURL(url)
+        globalThis.document.body.removeChild(linkElement)
+      } else {
+        // Fallback to client-side PDF generation using browser print
+        const data = await response.json()
+        if (data.html) {
+          // Open HTML in new window for printing
+          const printWindow = window.open('', '_blank')
+          if (printWindow) {
+            printWindow.document.write(data.html)
+            printWindow.document.close()
+            // Wait for content to load, then trigger print dialog
+            printWindow.onload = () => {
+              setTimeout(() => {
+                printWindow.print()
+              }, 250)
+            }
+          } else {
+            // If popup blocked, show instructions
+            alert('Please allow popups and try again, or use your browser\'s print function (Ctrl+P / Cmd+P)')
+          }
+        } else {
+          // Ultimate fallback: use browser print on current page
+          window.print()
+        }
+      }
     } catch (error) {
       console.error('PDF export error:', error)
-      alert('Failed to export PDF')
+      // Fallback: use browser print
+      if (confirm('PDF service unavailable. Would you like to use browser print instead?')) {
+        window.print()
+      }
     }
   }
 
@@ -203,35 +233,23 @@ export default function DocumentEditorClient({ document }: DocumentEditorClientP
               </svg>
               Export PDF
             </button>
-            <div className="flex gap-2">
-              <button
-                onClick={() => handleSave(prompt('Enter a change summary (optional):') || 'Manual save')}
-                disabled={saving}
-                className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors disabled:bg-indigo-300 flex items-center gap-2"
-              >
-                {saving ? (
-                  <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                ) : (
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
-                  </svg>
-                )}
-                {saving ? 'Saving...' : 'Save Version'}
-              </button>
-
-              <button
-                onClick={() => setShowVersionHistory(true)}
-                className="bg-gray-600 text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors flex items-center gap-2"
-              >
-                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 transition-colors disabled:bg-indigo-300 flex items-center gap-2"
+            >
+              {saving ? (
+                <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-                History
-              </button>
-            </div>
+              ) : (
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+                </svg>
+              )}
+              {saving ? 'Saving...' : 'Save'}
+            </button>
           </div>
         </div>
 

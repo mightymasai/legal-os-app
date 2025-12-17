@@ -272,3 +272,5 @@ Lawyers who don't adopt this will be at a **massive competitive disadvantage**:
 ---
 
 *Built with cutting-edge AI, modern architecture, and deep legal domain expertise. This platform represents the future of legal practice.*
+
+

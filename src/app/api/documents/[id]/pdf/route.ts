@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServerSupabaseClient } from '@/lib/authServer'
-import puppeteer from 'puppeteer'
 
+// Serverless-friendly PDF generation
+// Uses client-side PDF generation approach for better compatibility with serverless environments
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -32,15 +33,8 @@ export async function GET(
       return NextResponse.json({ error: 'Access denied' }, { status: 403 })
     }
 
-    // Generate PDF
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ['--no-sandbox', '--disable-setuid-sandbox']
-    })
-
-    const page = await browser.newPage()
-
-    // Create HTML content for PDF
+    // Create HTML content optimized for PDF printing
+    // This will be used by client-side PDF generation
     const htmlContent = `
       <!DOCTYPE html>
       <html>
@@ -48,11 +42,20 @@ export async function GET(
           <meta charset="utf-8">
           <title>${document.title}</title>
           <style>
+            @media print {
+              @page {
+                margin: 1in;
+                size: A4;
+              }
+            }
             body {
               font-family: 'Times New Roman', serif;
               line-height: 1.6;
-              margin: 40px;
+              margin: 0;
+              padding: 40px;
               font-size: 12pt;
+              color: #000;
+              max-width: 8.5in;
             }
             h1 {
               font-size: 24pt;
@@ -63,6 +66,7 @@ export async function GET(
             }
             p {
               margin-bottom: 12px;
+              text-align: justify;
             }
             .header {
               text-align: center;
@@ -72,9 +76,6 @@ export async function GET(
             }
             .content {
               margin-top: 20px;
-            }
-            @page {
-              margin: 1in;
             }
           </style>
         </head>
@@ -90,26 +91,60 @@ export async function GET(
       </html>
     `
 
-    await page.setContent(htmlContent, { waitUntil: 'networkidle0' })
+    // For serverless environments, we'll use an external PDF service or client-side generation
+    // Option: Use Gotenberg API, Browserless API, or similar service
+    const pdfServiceUrl = process.env.PDF_SERVICE_URL
+    
+    if (pdfServiceUrl) {
+      try {
+        const response = await fetch(pdfServiceUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(process.env.PDF_SERVICE_API_KEY && {
+              'Authorization': `Bearer ${process.env.PDF_SERVICE_API_KEY}`
+            })
+          },
+          body: JSON.stringify({
+            html: htmlContent,
+            options: {
+              format: 'A4',
+              printBackground: true,
+              margin: {
+                top: '1in',
+                right: '1in',
+                bottom: '1in',
+                left: '1in'
+              }
+            }
+          })
+        })
 
-    const pdfBuffer = await page.pdf({
-      format: 'A4',
-      printBackground: true,
-      margin: {
-        top: '1in',
-        right: '1in',
-        bottom: '1in',
-        left: '1in'
+        if (response.ok) {
+          const pdfBuffer = await response.arrayBuffer()
+          return new NextResponse(pdfBuffer, {
+            headers: {
+              'Content-Type': 'application/pdf',
+              'Content-Disposition': `attachment; filename="${document.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf"`
+            }
+          })
+        }
+      } catch (serviceError) {
+        console.warn('PDF service unavailable, using fallback:', serviceError)
       }
-    })
+    }
 
-    await browser.close()
-
-    // Return PDF as response
-    return new NextResponse(pdfBuffer, {
+    // Fallback: Return HTML with instructions for client-side PDF generation
+    // The client can use window.print() or a library like jsPDF
+    return NextResponse.json({
+      success: true,
+      html: htmlContent,
+      title: document.title,
+      message: 'Use browser print-to-PDF or client-side PDF generation',
+      instructions: 'Open this HTML in a new window and use browser print (Ctrl+P / Cmd+P) to save as PDF'
+    }, {
       headers: {
-        'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="${document.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf"`
+        'Content-Type': 'application/json'
       }
     })
   } catch (error) {

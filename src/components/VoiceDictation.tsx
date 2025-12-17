@@ -191,3 +191,5 @@ export default function VoiceDictation({ onTranscription, isActive, onToggle }: 
     </div>
   )
 }
+
+

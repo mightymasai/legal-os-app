@@ -94,3 +94,5 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Failed to process document' }, { status: 500 })
   }
 }
+
+
