@@ -14,6 +14,8 @@ type Document = {
   title: string;
   content: string;
   user_id: string;
+  current_version?: number;
+  matter_id?: string | null;
 };
 
 interface DocumentEditorClientProps {
@@ -257,8 +259,8 @@ export default function DocumentEditorClient({ document }: DocumentEditorClientP
         {showMatterSelector && (
           <div className="mb-6">
             <MatterSelector
-              selectedMatterId={selectedMatterId}
-              onMatterSelect={setSelectedMatterId}
+              selectedMatterId={selectedMatterId || undefined}
+              onMatterSelect={(id) => setSelectedMatterId(id || null)}
               documentId={document.id}
             />
           </div>
