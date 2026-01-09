@@ -11,6 +11,7 @@
   "dependencies": {
     "@headlessui/react": "^2.2.0",
     "@heroicons/react": "^2.2.0",
+    "@stripe/stripe-js": "^8.6.1",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.50.3",
     "@tiptap/extension-collaboration": "^2.0.0",
@@ -19,8 +20,10 @@
     "@tiptap/react": "^2.0.0",
     "@tiptap/starter-kit": "^2.0.0",
     "next": "14.2.15",
+    "openai": "^6.15.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "stripe": "^20.1.2",
     "y-webrtc": "^10.3.0",
     "yjs": "^13.6.20"
   },
