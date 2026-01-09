@@ -3,7 +3,7 @@
 ## ✅ Database Setup (Do This First!)
 
 - [ ] Open Supabase Dashboard
-- [ ] Run migration: `20260108_initial_schema_fixed.sql` ⚠️ Use the **_fixed** version!
+- [ ] Run migration: `20260108_initial_schema_v2.sql` ⚠️ Use the **_v2** version!
 - [ ] Run migration: `20260108_auth_triggers.sql`
 - [ ] Verify 19 tables created (run verification query)
 - [ ] Copy Project URL from Settings → API
@@ -72,8 +72,8 @@ Follow the detailed steps in `SUPABASE_SETUP_GUIDE.md`
 
 ## Common Issues & Quick Fixes
 
-### ❌ "permission denied for schema auth"
-**Fix:** Use `20260108_initial_schema_fixed.sql` (not the original file)
+### ❌ "permission denied for schema auth" OR "relation 'public.profiles' does not exist"
+**Fix:** Use `20260108_initial_schema_v2.sql` (the latest version with all fixes)
 
 ### ❌ "relation already exists"
 **Fix:** Either DROP all tables first, or create a fresh Supabase project

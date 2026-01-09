@@ -2,12 +2,14 @@
 
 ## Step 1: Run the Fixed Database Migration
 
+⚠️ **IMPORTANT:** Use the `_v2.sql` file (not the `_fixed.sql` file)!
+
 1. Open your Supabase project at https://supabase.com/dashboard
 2. Navigate to **SQL Editor** in the left sidebar
 3. Click **New Query**
-4. Open this file on your computer: `Downloads\legal-os-app\supabase\migrations\20260108_initial_schema_fixed.sql`
-5. Copy the ENTIRE contents
-6. Paste into the Supabase SQL Editor
+4. Open this file on your computer: `Downloads\legal-os-app\supabase\migrations\20260108_initial_schema_v2.sql`
+5. Copy the ENTIRE contents (Ctrl+A, then Ctrl+C)
+6. Paste into the Supabase SQL Editor (Ctrl+V)
 7. Click **RUN** (or press Ctrl+Enter)
 8. Wait for success message (should take 5-10 seconds)
 
@@ -15,6 +17,20 @@
 ```
 Success. No rows returned
 ```
+
+### If You Get Errors:
+
+**Error: "relation 'profiles' already exists"**
+→ You need a fresh Supabase project, or run these commands first:
+```sql
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO public;
+```
+
+**Error: "permission denied for schema auth"**
+→ Make sure you're using `20260108_initial_schema_v2.sql` (NOT the original or _fixed version)
 
 ## Step 2: Run the Auth Triggers Migration
 
