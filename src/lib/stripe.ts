@@ -20,6 +20,7 @@ export const PRICING_PLANS = {
     id: 'trial',
     name: 'Free Trial',
     price: 0,
+    priceId: undefined as string | undefined,
     interval: 'month' as const,
     features: [
       '14-day free trial',
@@ -88,6 +89,7 @@ export const PRICING_PLANS = {
     id: 'enterprise',
     name: 'Enterprise',
     price: null, // Custom pricing
+    priceId: undefined as string | undefined,
     interval: 'year' as const,
     features: [
       'Unlimited users',
@@ -114,6 +116,7 @@ export const PRICING_PLANS = {
     id: 'white_label',
     name: 'White Label Partnership',
     price: null, // Revenue share model
+    priceId: undefined as string | undefined,
     interval: 'year' as const,
     features: [
       'Full white-label branding',
