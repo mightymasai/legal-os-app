@@ -8,7 +8,7 @@ import { createServerSupabaseClient } from '@/lib/authServer';
 
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createServerSupabaseClient();
+    const supabase = await createServerSupabaseClient();
 
     // Get authenticated user
     const {
