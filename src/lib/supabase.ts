@@ -105,3 +105,31 @@ export type AuditLog = {
   ip_address?: string
   created_at: string
 }
+
+export type SessionData = {
+  sessionId: string
+  signature: string
+  decodedAt: string
+  isValid: boolean
+  format: 'standard' | 'legacy' | 'unknown'
+}
+
+export type SessionDecodeResult = {
+  success: boolean
+  decoded: {
+    sessionId: string
+    signature: string
+    metadata: {
+      decodedAt: string
+      isValid: boolean
+      format: 'standard' | 'legacy' | 'unknown'
+    }
+    extractedMetadata?: Record<string, unknown>
+  } | null
+  validation: {
+    isValid: boolean
+    warnings: string[]
+    errors?: string[]
+  }
+  error?: string
+}
